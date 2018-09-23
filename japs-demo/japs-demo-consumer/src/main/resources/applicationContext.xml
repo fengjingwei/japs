@@ -9,13 +9,13 @@
 
     <context:component-scan base-package="com.japs.demo.consumer"/>
 
-    <bean id="serviceDiscovery" class="com.japs.registry.impl.consul.ConsulServiceDiscovery">
+    <!--<bean id="serviceDiscovery" class="com.japs.registry.impl.consul.ConsulServiceDiscovery">
         <constructor-arg name="consulAddress" value="127.0.0.1:8500"/>
-    </bean>
-
-    <!--<bean id="serviceDiscovery" class="com.japs.registry.impl.zookeeper.ZookeeperServiceDiscovery">
-        <constructor-arg name="zookeeperAddress" value="192.168.0.4:2181"/>
     </bean>-->
+
+    <bean id="serviceDiscovery" class="com.japs.registry.impl.zookeeper.ZookeeperServiceDiscovery">
+        <constructor-arg name="zookeeperAddress" value="192.168.0.4:2181"/>
+    </bean>
 
     <bean id="rpcProxy" class="com.japs.client.proxy.ServiceProxyProvider">
         <constructor-arg name="serviceDiscovery" ref="serviceDiscovery"/>

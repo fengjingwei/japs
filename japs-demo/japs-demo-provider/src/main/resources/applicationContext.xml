@@ -11,13 +11,13 @@
 
     <context:property-placeholder location="classpath:rpc.properties"/>
 
-    <bean id="serviceRegistry" class="com.japs.registry.impl.consul.ConsulServiceRegistry">
-        <constructor-arg name="consulAddress" value="${rpc.registry_address}"/>
-    </bean>
-
-    <!--<bean id="serviceRegistry" class="com.japs.registry.impl.zookeeper.ZookeeperServiceRegistry">
-        <constructor-arg name="zookeeperAddress" value="${rpc.registry.address}"/>
+    <!--<bean id="serviceRegistry" class="com.japs.registry.impl.consul.ConsulServiceRegistry">
+        <constructor-arg name="consulAddress" value="${rpc.registry.address}"/>
     </bean>-->
+
+    <bean id="serviceRegistry" class="com.japs.registry.impl.zookeeper.ZookeeperServiceRegistry">
+        <constructor-arg name="zookeeperAddress" value="${rpc.registry.address}"/>
+    </bean>
 
     <bean id="RpcServer" class="com.japs.server.RpcServer">
         <constructor-arg name="serverIp" value="${rpc.server.ip}"/>
