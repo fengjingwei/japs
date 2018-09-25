@@ -74,18 +74,18 @@ public class ChannelManager {
         @Override
         protected void initChannel(SocketChannel ch) {
             ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast(new RpcEncoder(RpcRequest.class, new ProtobufSerializer()));
-            pipeline.addLast(new RpcDecoder(RpcResponse.class, new ProtobufSerializer()));
-            pipeline.addLast(new RpcResponseHandler());
+            pipeline.addLast(new RpcEncoder(RpcRequest.class, new ProtobufSerializer()))
+                    .addLast(new RpcDecoder(RpcResponse.class, new ProtobufSerializer()))
+                    .addLast(new RpcResponseHandler());
         }
     }
 
     private class RpcResponseHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
         @Override
-        protected void messageReceived(ChannelHandlerContext channelHandlerContext, RpcResponse response) {
-            log.debug("Get response: {}", response);
-            RpcResponseFutureManager.getInstance().futureDone(response);
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcResponse rpcResponse) {
+            log.debug("Get response: {}", rpcResponse);
+            RpcResponseFutureManager.getInstance().futureDone(rpcResponse);
         }
 
         @Override

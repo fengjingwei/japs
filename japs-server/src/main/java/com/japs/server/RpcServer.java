@@ -22,6 +22,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -74,13 +75,12 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                         @Override
                         public void initChannel(SocketChannel channel) {
                             ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addLast(new RpcDecoder(RpcRequest.class, new ProtobufSerializer()));
-                            pipeline.addLast(new RpcEncoder(RpcResponse.class, new ProtobufSerializer()));
-                            pipeline.addLast(new RpcServerHandler(handlerMap));
+                            pipeline.addLast(new RpcDecoder(RpcRequest.class, new ProtobufSerializer()))
+                                    .addLast(new RpcEncoder(RpcResponse.class, new ProtobufSerializer()))
+                                    .addLast(new RpcServerHandler(handlerMap));
                         }
                     });
-            bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
-            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture future = bootstrap.bind(serverIp, serverPort).sync();
 
@@ -99,10 +99,14 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
 
     private void registerServices() {
         if (serviceRegistry != null) {
-            handlerMap.keySet().forEach(interfaceName -> {
-                serviceRegistry.register(interfaceName, new ServiceAddress(serverIp, serverPort));
-                log.info("Registering service: {} with address: {}:{}", interfaceName, serverIp, serverPort);
-            });
+            if (CollectionUtils.isEmpty(handlerMap.values())) {
+                log.info("No discovery service");
+            } else {
+                handlerMap.keySet().forEach(interfaceName -> {
+                    serviceRegistry.register(interfaceName, new ServiceAddress(serverIp, serverPort));
+                    log.info("Registering service: {} with address: {}:{}", interfaceName, serverIp, serverPort);
+                });
+            }
         }
     }
 
