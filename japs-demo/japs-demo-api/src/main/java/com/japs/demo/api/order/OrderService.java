@@ -1,4 +1,4 @@
-package com.japs.demo.api;
+package com.japs.demo.api.order;
 
 import com.japs.annotation.RpcService;
 

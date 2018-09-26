@@ -19,7 +19,7 @@
         <constructor-arg name="zookeeperAddress" value="${rpc.registry.address}"/>
     </bean>
 
-    <bean id="RpcServer" class="com.japs.server.RpcServer">
+    <bean id="rpcServer" class="com.japs.server.RpcServer">
         <constructor-arg name="serverIp" value="${rpc.server.ip}"/>
         <constructor-arg name="serverPort" value="${rpc.server.port}"/>
         <constructor-arg name="serviceRegistry" ref="serviceRegistry"/>

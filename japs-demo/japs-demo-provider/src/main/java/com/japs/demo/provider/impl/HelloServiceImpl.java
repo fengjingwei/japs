@@ -1,6 +1,6 @@
-package com.japs.demo.provider;
+package com.japs.demo.provider.impl;
 
-import com.japs.demo.api.HelloService;
+import com.japs.demo.api.hello.HelloService;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

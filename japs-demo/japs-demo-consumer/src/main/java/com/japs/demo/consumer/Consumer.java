@@ -1,13 +1,11 @@
 package com.japs.demo.consumer;
 
-import com.japs.annotation.EnableRpcClients;
-import com.japs.demo.api.HelloService;
-import com.japs.demo.api.OrderService;
+import com.japs.demo.api.hello.HelloService;
+import com.japs.demo.api.order.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @Slf4j
-@EnableRpcClients(basePackages = {"com.japs.demo.api"})
 public class Consumer {
 
     public static void main(String[] args) {

@@ -19,6 +19,7 @@
 
     <bean id="rpcProxy" class="com.japs.client.proxy.ServiceProxyProvider">
         <constructor-arg name="serviceDiscovery" ref="serviceDiscovery"/>
+        <constructor-arg name="basePackages" value="com.japs.demo.api"/>
     </bean>
 
 </beans>

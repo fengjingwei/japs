@@ -1,6 +1,6 @@
-package com.japs.demo.provider;
+package com.japs.demo.provider.impl;
 
-import com.japs.demo.api.OrderService;
+import com.japs.demo.api.order.OrderService;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

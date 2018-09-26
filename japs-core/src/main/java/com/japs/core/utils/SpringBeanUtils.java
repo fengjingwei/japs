@@ -1,6 +1,7 @@
 package com.japs.core.utils;
 
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ public final class SpringBeanUtils {
 
     private static final SpringBeanUtils INSTANCE = new SpringBeanUtils();
 
-    private ConfigurableApplicationContext cfgContext;
+    private static ApplicationContext applicationContext = null;
 
     public static SpringBeanUtils getInstance() {
         return INSTANCE;
@@ -16,16 +17,15 @@ public final class SpringBeanUtils {
 
     public <T> T getBean(final Class<T> type) {
         Objects.requireNonNull(type);
-        return cfgContext.getBean(type);
+        return applicationContext.getBean(type);
     }
 
-    public void setBean(final String beanName, final Object obj) {
-        Objects.requireNonNull(beanName);
-        Objects.requireNonNull(obj);
-        cfgContext.getBeanFactory().registerSingleton(beanName, obj);
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+
+        SpringBeanUtils.applicationContext = applicationContext;
     }
 
-    public void setCfgContext(final ConfigurableApplicationContext cfgContext) {
-        this.cfgContext = cfgContext;
+    public ApplicationContext getApplicationContext() {
+        return SpringBeanUtils.applicationContext;
     }
 }

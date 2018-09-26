@@ -3,6 +3,7 @@ package com.japs.client.proxy;
 import com.japs.annotation.EnableRpcClients;
 import com.japs.annotation.RpcService;
 import com.japs.registry.ServiceDiscovery;
+import com.japs.registry.impl.zookeeper.ZookeeperServiceDiscovery;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +34,21 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
     @NonNull
     private ServiceDiscovery serviceDiscovery;
 
+    @NonNull
+    private String[] basePackages;
+
+    public ServiceProxyProvider(ZookeeperServiceDiscovery serviceDiscovery, String[] basePackages) {
+        this.serviceDiscovery = serviceDiscovery;
+        this.basePackages = basePackages;
+    }
+
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         log.info("register beans");
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcService.class));
 
-        for (String basePackage : getBasePackages()) {
+        for (String basePackage : basePackages) {
             Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);
             for (BeanDefinition candidateComponent : candidateComponents) {
                 if (candidateComponent instanceof AnnotatedBeanDefinition) {
