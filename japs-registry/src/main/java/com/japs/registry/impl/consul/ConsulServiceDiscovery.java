@@ -75,7 +75,6 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
     }
 
     private LoadBalancer buildLoadBalancer(List<HealthService> healthServices) {
-        // TODO: make load balancer type configurable
         return new RandomLoadBalancer(healthServices.stream()
                 .map(healthService -> {
                     HealthService.Service service = healthService.getService();

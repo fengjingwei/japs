@@ -13,7 +13,7 @@ public class RpcResponseFutureManager {
 
     public static RpcResponseFutureManager getInstance() {
         if (rpcResponseFutureManager == null) {
-            synchronized (ChannelManager.class) {
+            synchronized (RpcResponseFutureManager.class) {
                 if (rpcResponseFutureManager == null) {
                     rpcResponseFutureManager = new RpcResponseFutureManager();
                 }

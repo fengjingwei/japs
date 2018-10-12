@@ -78,7 +78,6 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
     }
 
     private LoadBalancer buildLoadBalancer(List<String> servers) {
-        // TODO: make load balancer type configurable
         return new RandomLoadBalancer(servers.stream()
                 .map(server -> {
                     String[] serverArr = BaseStringUtils.split(server, ":");

@@ -39,7 +39,7 @@ public class ChannelManager {
 
     public Channel getChannel(InetSocketAddress inetSocketAddress) {
         Channel channel = channels.get(inetSocketAddress);
-        if (null == channel) {
+        if (channel == null) {
             EventLoopGroup group = new NioEventLoopGroup();
             try {
                 Bootstrap bootstrap = new Bootstrap();

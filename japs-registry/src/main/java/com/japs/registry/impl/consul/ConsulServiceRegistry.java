@@ -27,7 +27,6 @@ public class ConsulServiceRegistry implements ServiceRegistry {
         newService.setAddress(serviceAddress.getIp());
         newService.setPort(serviceAddress.getPort());
 
-        // TODO: make check configurable
         NewService.Check check = new NewService.Check();
         check.setTcp(serviceAddress.toString());
         check.setInterval("1s");

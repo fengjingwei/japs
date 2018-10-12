@@ -7,16 +7,16 @@ import java.util.TreeMap;
 public class ConsistentHash<T> {
 
     private final HashFunction hashFunction;
+
     private final int numberOfReplicas;
+
     private final SortedMap<Integer, T> circle = new TreeMap<>();
 
     public ConsistentHash(HashFunction hashFunction, int numberOfReplicas, Collection<T> nodes) {
         this.hashFunction = hashFunction;
         this.numberOfReplicas = numberOfReplicas;
 
-        nodes.forEach(node -> {
-            this.add(node);
-        });
+        nodes.forEach(node -> this.add(node));
     }
 
     public void add(T node) {

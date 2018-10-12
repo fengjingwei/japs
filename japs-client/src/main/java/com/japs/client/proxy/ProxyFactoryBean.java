@@ -99,9 +99,7 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         CountDownLatch latch = new CountDownLatch(1);
         RpcResponseFuture rpcResponseFuture = new RpcResponseFuture(request.getRequestId());
         RpcResponseFutureManager.getInstance().registerFuture(rpcResponseFuture);
-        channel.writeAndFlush(request).addListener((ChannelFutureListener) future -> {
-            latch.countDown();
-        });
+        channel.writeAndFlush(request).addListener((ChannelFutureListener) future -> latch.countDown());
         try {
             latch.await();
         } catch (InterruptedException e) {
@@ -109,7 +107,6 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         }
 
         try {
-            // TODO: make timeout configurable
             return rpcResponseFuture.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.warn("Exception:", e);
