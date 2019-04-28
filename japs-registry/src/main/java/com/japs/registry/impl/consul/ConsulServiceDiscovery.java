@@ -24,7 +24,7 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
 
     private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() << 1;
 
-    Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = new ConcurrentHashMap<>();
+    private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = new ConcurrentHashMap<>();
 
     public ConsulServiceDiscovery(String consulAddress) {
         log.debug("Use consul to do service discovery: {}", consulAddress);
@@ -63,10 +63,10 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
                 QueryParams param = QueryParams.Builder.builder().setIndex(consulIndex).build();
                 Response<List<HealthService>> healthyServices = consulClient.getHealthServices(serviceName, true, param);
                 consulIndex = healthyServices.getConsulIndex();
-                log.debug("consul index for {} is: {}", serviceName, consulIndex);
+                log.debug("Consul index for {} is: {}", serviceName, consulIndex);
 
                 List<HealthService> healthServices = healthyServices.getValue();
-                log.debug("service addresses of {} is: {}", serviceName, healthServices);
+                log.debug("Service addresses of {} is: {}", serviceName, healthServices);
 
                 loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices));
             } while (true);

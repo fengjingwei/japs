@@ -61,13 +61,13 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         // Get channel by service address
         Channel channel = ChannelManager.getInstance().getChannel(serviceAddress);
         if (channel == null) {
-            throw new RuntimeException("Cann't get channel for address" + serviceAddress);
+            throw new RuntimeException("Can't get channel for address" + serviceAddress);
         }
 
         // Send request
         RpcResponse response = sendRequest(channel, request);
         if (response == null) {
-            throw new RuntimeException("response is null");
+            throw new RuntimeException("Response is null");
         }
         if (response.hasException()) {
             throw response.getException();
@@ -105,7 +105,6 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }
-
         try {
             return rpcResponseFuture.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {

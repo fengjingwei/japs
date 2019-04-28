@@ -48,7 +48,6 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
         log.info("Putting handler");
         // Register handler
         getServiceInterfaces(ctx)
-                .stream()
                 .forEach(interfaceClazz -> {
                     String serviceName = interfaceClazz.getAnnotation(RpcService.class).value().getName();
                     Object serviceBean = ctx.getBean(interfaceClazz);
@@ -81,16 +80,12 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                         }
                     });
             bootstrap.option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true);
-
             ChannelFuture future = bootstrap.bind(serverIp, serverPort).sync();
-
             registerServices();
-
             log.info("Server started");
-
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            throw new RuntimeException("Server shutdown!", e);
+            throw new RuntimeException("Server shutdown", e);
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();

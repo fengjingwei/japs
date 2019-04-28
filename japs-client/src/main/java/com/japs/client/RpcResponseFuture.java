@@ -42,7 +42,7 @@ public class RpcResponseFuture implements Future<Object> {
     public RpcResponse get(long timeout, TimeUnit unit) throws TimeoutException {
         try {
             if (!LATCH.await(timeout, unit)) {
-                throw new TimeoutException("RPC Request timeout!");
+                throw new TimeoutException("RPC Request timeout");
             }
         } catch (InterruptedException e) {
             log.error(e.getMessage());

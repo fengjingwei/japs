@@ -27,9 +27,9 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
                 }
             });
             LATCH.await();
-            log.info("connected to zookeeper");
+            log.info("Connected to zookeeper");
         } catch (Exception e) {
-            log.error("create zookeeper client failure", e);
+            log.error("Create zookeeper client failure", e);
         }
     }
 
@@ -40,22 +40,22 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
 
             if (zooKeeper.exists(registryPath, false) == null) {
                 zooKeeper.create(registryPath, registryPath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-                log.debug("create registry node : {}", registryPath);
+                log.debug("Create registry node : {}", registryPath);
             }
 
-            // create service node
+            // Create service node
             String servicePath = BaseStringUtils.join(registryPath, serviceName);
             if (zooKeeper.exists(servicePath, false) == null) {
                 zooKeeper.create(servicePath, servicePath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-                log.debug("create service node : {}", servicePath);
+                log.debug("Create service node : {}", servicePath);
             }
 
-            // create address node
+            // Create address node
             String addressPath = BaseStringUtils.join(servicePath, "address-");
             String addressNode = zooKeeper.create(addressPath, serviceAddress.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-            log.debug("create address node : {} => {}", addressNode, serviceAddress);
+            log.debug("Create address node : {} => {}", addressNode, serviceAddress);
         } catch (Exception e) {
-            log.debug("create node failure : {}", e);
+            log.debug("Create node failure : {}", e);
         }
     }
 }

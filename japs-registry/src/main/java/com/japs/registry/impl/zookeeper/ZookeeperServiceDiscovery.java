@@ -26,7 +26,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
 
     private static final CountDownLatch LATCH = new CountDownLatch(1);
 
-    Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = new ConcurrentHashMap<>();
+    private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = new ConcurrentHashMap<>();
 
     public ZookeeperServiceDiscovery(String zookeeperAddress) {
         try {
@@ -44,8 +44,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
     @Override
     public String discover(String serviceName) {
         if (!loadBalancerMap.containsKey(serviceName)) {
-            String registryPath = REGISTRY_PATH;
-            String servicePath = BaseStringUtils.join(registryPath, serviceName);
+            String servicePath = BaseStringUtils.join(REGISTRY_PATH, serviceName);
             try {
                 List<String> zNodePaths = zooKeeper.getChildren(servicePath, false);
                 if (!CollectionUtils.isEmpty(zNodePaths)) {
@@ -65,7 +64,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
                     loadBalancerMap.put(serviceName, buildLoadBalancer(servers));
                 }
             } catch (Exception e) {
-                log.debug("get zookeeper data failure : {}", e);
+                log.debug("Get zookeeper data failure : {}", e);
             }
         }
 

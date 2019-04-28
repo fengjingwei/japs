@@ -26,7 +26,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
             Object result = handleRequest(request);
             response.setResult(result);
         } catch (Exception e) {
-            log.warn("Get exception when hanlding request, exception: {}", e);
+            log.warn("Get exception when handing request, exception: {}", e);
             response.setException(e);
         }
         ctx.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> log.debug("Sent response for request: {}", request.getRequestId()));
@@ -52,7 +52,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.error("server caught exception", cause);
+        log.error("Server caught exception", cause);
         ctx.close();
     }
 }

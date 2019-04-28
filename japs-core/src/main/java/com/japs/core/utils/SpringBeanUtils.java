@@ -21,7 +21,6 @@ public final class SpringBeanUtils {
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
         SpringBeanUtils.applicationContext = applicationContext;
     }
 

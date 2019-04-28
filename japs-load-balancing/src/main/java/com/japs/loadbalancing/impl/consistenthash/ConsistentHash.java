@@ -16,7 +16,7 @@ public class ConsistentHash<T> {
         this.hashFunction = hashFunction;
         this.numberOfReplicas = numberOfReplicas;
 
-        nodes.forEach(node -> this.add(node));
+        nodes.forEach(this::add);
     }
 
     public void add(T node) {
