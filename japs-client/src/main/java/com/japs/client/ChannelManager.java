@@ -1,5 +1,6 @@
 package com.japs.client;
 
+import com.google.common.collect.Maps;
 import com.japs.core.codec.coder.RpcDecoder;
 import com.japs.core.codec.coder.RpcEncoder;
 import com.japs.core.codec.serialization.impl.ProtobufSerializer;
@@ -14,12 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class ChannelManager {
 
     private static ChannelManager channelManager;
+
+    private Map<InetSocketAddress, Channel> channels = Maps.newConcurrentMap();
 
     private ChannelManager() {
     }
@@ -35,8 +37,6 @@ public class ChannelManager {
         return channelManager;
     }
 
-    private Map<InetSocketAddress, Channel> channels = new ConcurrentHashMap<>();
-
     public Channel getChannel(InetSocketAddress inetSocketAddress) {
         Channel channel = channels.get(inetSocketAddress);
         if (channel == null) {
@@ -51,7 +51,6 @@ public class ChannelManager {
 
                 channel = bootstrap.connect(inetSocketAddress.getHostName(), inetSocketAddress.getPort()).sync().channel();
                 registerChannel(inetSocketAddress, channel);
-
                 // Remove the channel for map when it's closed
                 channel.closeFuture().addListener((ChannelFutureListener) future -> removeChannel(inetSocketAddress));
             } catch (Exception e) {

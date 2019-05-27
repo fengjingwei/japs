@@ -1,5 +1,6 @@
 package com.japs.server;
 
+import com.google.common.collect.Maps;
 import com.japs.annotation.RpcService;
 import com.japs.core.codec.coder.RpcDecoder;
 import com.japs.core.codec.coder.RpcEncoder;
@@ -25,7 +26,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,19 +45,18 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     @NonNull
     private ServiceRegistry serviceRegistry;
 
-    private Map<String, Object> handlerMap = new HashMap<>();
+    private Map<String, Object> handlerMap = Maps.newConcurrentMap();
 
     @Override
     public void setApplicationContext(ApplicationContext ctx) throws BeansException {
         log.info("Putting handler");
         // Register handler
-        getServiceInterfaces(ctx)
-                .forEach(interfaceClazz -> {
-                    String serviceName = interfaceClazz.getAnnotation(RpcService.class).value().getName();
-                    Object serviceBean = ctx.getBean(interfaceClazz);
-                    handlerMap.put(serviceName, serviceBean);
-                    log.debug("Put handler: {}, {}", serviceName, serviceBean);
-                });
+        getServiceInterfaces(ctx).forEach(interfaceClazz -> {
+            String serviceName = interfaceClazz.getAnnotation(RpcService.class).value().getName();
+            Object serviceBean = ctx.getBean(interfaceClazz);
+            handlerMap.put(serviceName, serviceBean);
+            log.debug("Put handler: {}, {}", serviceName, serviceBean);
+        });
     }
 
     @Override
@@ -78,8 +81,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                                     .addLast(new RpcEncoder(RpcResponse.class, new ProtobufSerializer()))
                                     .addLast(new RpcServerHandler(handlerMap));
                         }
-                    });
-            bootstrap.option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true);
+                    }).option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture future = bootstrap.bind(serverIp, serverPort).sync();
             registerServices();
             log.info("Server started");

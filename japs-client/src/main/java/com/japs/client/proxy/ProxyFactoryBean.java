@@ -46,7 +46,6 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
 
     private Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         String targetServiceName = type.getName();
-
         // Create request
         RpcRequest request = RpcRequest.builder()
                 .requestId(generateRequestId(targetServiceName))
@@ -54,16 +53,13 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
                 .methodName(method.getName())
                 .parameters(args)
                 .parameterTypes(method.getParameterTypes()).build();
-
         // Get service address
         InetSocketAddress serviceAddress = getServiceAddress(targetServiceName);
-
         // Get channel by service address
         Channel channel = ChannelManager.getInstance().getChannel(serviceAddress);
         if (channel == null) {
             throw new RuntimeException("Can't get channel for address" + serviceAddress);
         }
-
         // Send request
         RpcResponse response = sendRequest(channel, request);
         if (response == null) {
@@ -86,7 +82,7 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
             serviceAddress = serviceDiscovery.discover(targetServiceName);
             log.debug("Get address: {} for service: {}", serviceAddress, targetServiceName);
         }
-        if (StringUtils.isEmpty(serviceAddress)) {
+        if (BaseStringUtils.isEmpty(serviceAddress)) {
             throw new RuntimeException(String.format("Address of target service %s is empty", targetServiceName));
         }
         String[] array = BaseStringUtils.split(serviceAddress, ":");

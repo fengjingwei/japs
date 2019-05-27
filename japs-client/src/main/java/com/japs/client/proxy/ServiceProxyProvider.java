@@ -21,10 +21,10 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,14 +41,12 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
         log.info("Register beans");
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcService.class));
-
         for (String basePackage : basePackages) {
             Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);
             for (BeanDefinition candidateComponent : candidateComponents) {
                 if (candidateComponent instanceof AnnotatedBeanDefinition) {
                     AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
                     AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
-
                     BeanDefinitionHolder holder = createBeanDefinition(annotationMetadata);
                     BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
                 }
@@ -57,6 +55,7 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
     }
 
     private ClassPathScanningCandidateComponentProvider getScanner() {
+
         return new ClassPathScanningCandidateComponentProvider(false) {
 
             @Override
@@ -84,21 +83,16 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
     private BeanDefinitionHolder createBeanDefinition(AnnotationMetadata annotationMetadata) {
         String className = annotationMetadata.getClassName();
         log.info("Creating bean definition for class: {}", className);
-
         BeanDefinitionBuilder definition = BeanDefinitionBuilder.genericBeanDefinition(ProxyFactoryBean.class);
         String beanName = StringUtils.uncapitalize(className.substring(className.lastIndexOf('.') + 1));
-
         definition.addPropertyValue("type", className);
         definition.addPropertyValue("serviceDiscovery", serviceDiscovery);
-
         return new BeanDefinitionHolder(definition.getBeanDefinition(), beanName);
     }
 
     private Set<String> getBasePackages() {
         String[] basePackages = getMainClass().getAnnotation(EnableRpcClients.class).basePackages();
-        Set set = new HashSet<>();
-        Collections.addAll(set, basePackages);
-        return set;
+        return Stream.of(basePackages).collect(Collectors.toSet());
     }
 
     private Class<?> getMainClass() {

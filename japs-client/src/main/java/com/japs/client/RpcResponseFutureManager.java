@@ -1,8 +1,9 @@
 package com.japs.client;
 
+import com.google.common.collect.Maps;
 import com.japs.core.common.RpcResponse;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 public class RpcResponseFutureManager {
 
@@ -22,7 +23,7 @@ public class RpcResponseFutureManager {
         return rpcResponseFutureManager;
     }
 
-    private ConcurrentHashMap<String, RpcResponseFuture> rpcFutureMap = new ConcurrentHashMap<>();
+    private Map<String, RpcResponseFuture> rpcFutureMap = Maps.newConcurrentMap();
 
     public void registerFuture(RpcResponseFuture rpcResponseFuture) {
         rpcFutureMap.put(rpcResponseFuture.getRequestId(), rpcResponseFuture);

@@ -14,7 +14,7 @@
     </bean>-->
 
     <bean id="serviceDiscovery" class="com.japs.registry.impl.zookeeper.ZookeeperServiceDiscovery">
-        <constructor-arg name="zookeeperAddress" value="192.168.0.4:2181"/>
+        <constructor-arg name="zookeeperAddress" value="192.168.1.135:2181"/>
     </bean>
 
     <bean id="rpcProxy" class="com.japs.client.proxy.ServiceProxyProvider">

@@ -39,7 +39,6 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         if (serviceBean == null) {
             throw new RuntimeException(String.format("No service bean available: %s", serviceName));
         }
-
         // Invoke by reflect
         Class<?> serviceClass = serviceBean.getClass();
         String methodName = request.getMethodName();

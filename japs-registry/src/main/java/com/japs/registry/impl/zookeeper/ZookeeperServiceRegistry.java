@@ -37,7 +37,6 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
     public void register(String serviceName, ServiceAddress serviceAddress) {
         try {
             String registryPath = REGISTRY_PATH;
-
             if (zooKeeper.exists(registryPath, false) == null) {
                 zooKeeper.create(registryPath, registryPath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                 log.debug("Create registry node : {}", registryPath);

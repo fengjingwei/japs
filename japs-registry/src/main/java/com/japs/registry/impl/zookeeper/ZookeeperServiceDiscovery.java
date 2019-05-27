@@ -1,5 +1,6 @@
 package com.japs.registry.impl.zookeeper;
 
+import com.google.common.collect.Maps;
 import com.japs.core.common.ServiceAddress;
 import com.japs.core.utils.BaseStringUtils;
 import com.japs.loadbalancing.LoadBalancer;
@@ -15,7 +16,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
 
     private static final CountDownLatch LATCH = new CountDownLatch(1);
 
-    private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = new ConcurrentHashMap<>();
+    private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
 
     public ZookeeperServiceDiscovery(String zookeeperAddress) {
         try {
@@ -53,7 +53,6 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
                             .map(zNodePath -> {
                                 try {
                                     byte[] content = zooKeeper.getData(BaseStringUtils.join(servicePath, zNodePath), false, new Stat());
-
                                     return new String(content);
                                 } catch (KeeperException | InterruptedException e) {
                                     e.printStackTrace();
@@ -72,16 +71,13 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
         if (address == null) {
             throw new RuntimeException(String.format("No service instance for %s", serviceName));
         }
-
         return address.toString();
     }
 
     private LoadBalancer buildLoadBalancer(List<String> servers) {
-        return new RandomLoadBalancer(servers.stream()
-                .map(server -> {
-                    String[] serverArr = BaseStringUtils.split(server, ":");
-                    return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
-                })
-                .collect(Collectors.toList()));
+        return new RandomLoadBalancer(servers.stream().map(server -> {
+            String[] serverArr = BaseStringUtils.split(server, ":");
+            return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
+        }).collect(Collectors.toList()));
     }
 }
