@@ -2,7 +2,7 @@ package com.japs.registry.impl.zookeeper;
 
 import com.google.common.collect.Maps;
 import com.japs.core.common.ServiceAddress;
-import com.japs.core.utils.BaseStringUtils;
+import com.japs.core.utils.StringUtilsX;
 import com.japs.loadbalancing.LoadBalancer;
 import com.japs.loadbalancing.impl.RandomLoadBalancer;
 import com.japs.registry.ServiceConstant;
@@ -22,10 +22,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConstant {
 
-    private static volatile ZooKeeper zooKeeper;
-
     private static final CountDownLatch LATCH = new CountDownLatch(1);
-
+    private static volatile ZooKeeper zooKeeper;
     private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
 
     public ZookeeperServiceDiscovery(String zookeeperAddress) {
@@ -44,15 +42,15 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
     @Override
     public String discover(String serviceName) {
         if (!loadBalancerMap.containsKey(serviceName)) {
-            String servicePath = BaseStringUtils.join(REGISTRY_PATH, serviceName);
+            String servicePath = StringUtilsX.join(REGISTRY_PATH, serviceName);
             try {
                 List<String> zNodePaths = zooKeeper.getChildren(servicePath, false);
                 if (!CollectionUtils.isEmpty(zNodePaths)) {
                     List<String> servers = zNodePaths.stream()
-                            .filter(BaseStringUtils::isNoneBlank)
+                            .filter(StringUtilsX::isNoneBlank)
                             .map(zNodePath -> {
                                 try {
-                                    byte[] content = zooKeeper.getData(BaseStringUtils.join(servicePath, zNodePath), false, new Stat());
+                                    byte[] content = zooKeeper.getData(StringUtilsX.join(servicePath, zNodePath), false, new Stat());
                                     return new String(content);
                                 } catch (KeeperException | InterruptedException e) {
                                     e.printStackTrace();
@@ -76,7 +74,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
 
     private LoadBalancer buildLoadBalancer(List<String> servers) {
         return new RandomLoadBalancer(servers.stream().map(server -> {
-            String[] serverArr = BaseStringUtils.split(server, ":");
+            String[] serverArr = StringUtilsX.split(server, ":");
             return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
         }).collect(Collectors.toList()));
     }

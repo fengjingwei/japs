@@ -1,7 +1,7 @@
 package com.japs.registry.impl.zookeeper;
 
 import com.japs.core.common.ServiceAddress;
-import com.japs.core.utils.BaseStringUtils;
+import com.japs.core.utils.StringUtilsX;
 import com.japs.registry.ServiceConstant;
 import com.japs.registry.ServiceRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +15,8 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstant {
 
-    private static volatile ZooKeeper zooKeeper;
-
     private static final CountDownLatch LATCH = new CountDownLatch(1);
+    private static volatile ZooKeeper zooKeeper;
 
     private ZookeeperServiceRegistry(String zookeeperAddress) {
         try {
@@ -43,14 +42,14 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
             }
 
             // Create service node
-            String servicePath = BaseStringUtils.join(registryPath, serviceName);
+            String servicePath = StringUtilsX.join(registryPath, serviceName);
             if (zooKeeper.exists(servicePath, false) == null) {
                 zooKeeper.create(servicePath, servicePath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                 log.debug("Create service node : {}", servicePath);
             }
 
             // Create address node
-            String addressPath = BaseStringUtils.join(servicePath, "address-");
+            String addressPath = StringUtilsX.join(servicePath, "address-");
             String addressNode = zooKeeper.create(addressPath, serviceAddress.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             log.debug("Create address node : {} => {}", addressNode, serviceAddress);
         } catch (Exception e) {

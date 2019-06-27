@@ -5,7 +5,7 @@ import com.japs.client.RpcResponseFuture;
 import com.japs.client.RpcResponseFutureManager;
 import com.japs.core.common.RpcRequest;
 import com.japs.core.common.RpcResponse;
-import com.japs.core.utils.BaseStringUtils;
+import com.japs.core.utils.StringUtilsX;
 import com.japs.registry.ServiceDiscovery;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -82,13 +82,11 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
             serviceAddress = serviceDiscovery.discover(targetServiceName);
             log.debug("Get address: {} for service: {}", serviceAddress, targetServiceName);
         }
-        if (BaseStringUtils.isEmpty(serviceAddress)) {
+        if (StringUtilsX.isEmpty(serviceAddress)) {
             throw new RuntimeException(String.format("Address of target service %s is empty", targetServiceName));
         }
-        String[] array = BaseStringUtils.split(serviceAddress, ":");
-        String host = array[0];
-        int port = Integer.parseInt(array[1]);
-        return new InetSocketAddress(host, port);
+        String[] array = StringUtilsX.split(serviceAddress, ":");
+        return new InetSocketAddress(array[0], Integer.parseInt(array[1]));
     }
 
     private RpcResponse sendRequest(Channel channel, RpcRequest request) {

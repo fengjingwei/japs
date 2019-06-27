@@ -11,11 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 public class RpcDecoder extends ByteToMessageDecoder {
 
-    private Class<?> genericClass;
-
-    private Serializer serializer;
-
     private static final Integer LENGTH = 4;
+    private Class<?> genericClass;
+    private Serializer serializer;
 
     @Override
     public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {

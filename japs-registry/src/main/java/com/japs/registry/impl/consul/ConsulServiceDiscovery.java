@@ -21,10 +21,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ConsulServiceDiscovery implements ServiceDiscovery {
 
-    private ConsulClient consulClient;
-
     private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() << 1;
-
+    private ConsulClient consulClient;
     private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
 
     public ConsulServiceDiscovery(String consulAddress) {

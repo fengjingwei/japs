@@ -17,6 +17,15 @@ public class ProtobufSerializer implements Serializer {
 
     private static Objenesis objenesis = new ObjenesisStd(true);
 
+    private static <T> Schema<T> getSchema(Class<T> cls) {
+        Schema<T> schema = (Schema<T>) cachedSchema.get(cls);
+        if (schema == null) {
+            schema = RuntimeSchema.createFrom(cls);
+            cachedSchema.put(cls, schema);
+        }
+        return schema;
+    }
+
     @Override
     public <T> byte[] serialize(T obj) {
         Class<T> cls = (Class<T>) obj.getClass();
@@ -41,14 +50,5 @@ public class ProtobufSerializer implements Serializer {
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
-    }
-
-    private static <T> Schema<T> getSchema(Class<T> cls) {
-        Schema<T> schema = (Schema<T>) cachedSchema.get(cls);
-        if (schema == null) {
-            schema = RuntimeSchema.createFrom(cls);
-            cachedSchema.put(cls, schema);
-        }
-        return schema;
     }
 }

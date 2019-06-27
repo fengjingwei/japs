@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -41,17 +40,12 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
         log.info("Register beans");
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcService.class));
-        for (String basePackage : basePackages) {
-            Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);
-            for (BeanDefinition candidateComponent : candidateComponents) {
-                if (candidateComponent instanceof AnnotatedBeanDefinition) {
-                    AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
-                    AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
-                    BeanDefinitionHolder holder = createBeanDefinition(annotationMetadata);
-                    BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
-                }
-            }
-        }
+        Stream.of(basePackages).forEach(basePackage -> scanner.findCandidateComponents(basePackage).stream().filter(candidateComponent -> candidateComponent instanceof AnnotatedBeanDefinition).forEach(candidateComponent -> {
+            AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
+            AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
+            BeanDefinitionHolder holder = createBeanDefinition(annotationMetadata);
+            BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+        }));
     }
 
     private ClassPathScanningCandidateComponentProvider getScanner() {

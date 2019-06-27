@@ -8,6 +8,7 @@ import java.util.Map;
 public class RpcResponseFutureManager {
 
     private static RpcResponseFutureManager rpcResponseFutureManager;
+    private Map<String, RpcResponseFuture> rpcFutureMap = Maps.newConcurrentMap();
 
     private RpcResponseFutureManager() {
     }
@@ -22,8 +23,6 @@ public class RpcResponseFutureManager {
         }
         return rpcResponseFutureManager;
     }
-
-    private Map<String, RpcResponseFuture> rpcFutureMap = Maps.newConcurrentMap();
 
     public void registerFuture(RpcResponseFuture rpcResponseFuture) {
         rpcFutureMap.put(rpcResponseFuture.getRequestId(), rpcResponseFuture);

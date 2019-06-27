@@ -16,12 +16,10 @@ import java.util.concurrent.TimeoutException;
 @RequiredArgsConstructor
 public class RpcResponseFuture implements Future<Object> {
 
+    private final CountDownLatch LATCH = new CountDownLatch(1);
     @NonNull
     private String requestId;
-
     private RpcResponse response;
-
-    private final CountDownLatch LATCH = new CountDownLatch(1);
 
     public void done(RpcResponse response) {
         this.response = response;
