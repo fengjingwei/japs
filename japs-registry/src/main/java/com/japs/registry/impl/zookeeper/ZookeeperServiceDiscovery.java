@@ -44,13 +44,13 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
         if (!loadBalancerMap.containsKey(serviceName)) {
             String servicePath = StringUtilsX.join(REGISTRY_PATH, serviceName);
             try {
-                List<String> zNodePaths = zooKeeper.getChildren(servicePath, false);
+                List<String> zNodePaths = zooKeeper.getChildren(servicePath, true);
                 if (!CollectionUtils.isEmpty(zNodePaths)) {
                     List<String> servers = zNodePaths.stream()
                             .filter(StringUtilsX::isNoneBlank)
                             .map(zNodePath -> {
                                 try {
-                                    byte[] content = zooKeeper.getData(StringUtilsX.join(servicePath, zNodePath), false, new Stat());
+                                    byte[] content = zooKeeper.getData(StringUtilsX.join(servicePath, zNodePath), true, new Stat());
                                     return new String(content);
                                 } catch (KeeperException | InterruptedException e) {
                                     e.printStackTrace();
