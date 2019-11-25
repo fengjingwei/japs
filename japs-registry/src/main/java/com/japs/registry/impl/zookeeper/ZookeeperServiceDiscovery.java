@@ -72,7 +72,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
         return address.toString();
     }
 
-    private LoadBalancer buildLoadBalancer(List<String> servers) {
+    private LoadBalancer<ServiceAddress> buildLoadBalancer(List<String> servers) {
         return new RandomLoadBalancer(servers.stream().map(server -> {
             String[] serverArr = StringUtilsX.split(server, ":");
             return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
