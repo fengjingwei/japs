@@ -3,18 +3,19 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>japs-demo</artifactId>
+    <packaging>pom</packaging>
+    <name>Japs Demo</name>
 
     <parent>
         <artifactId>japs</artifactId>
         <groupId>com.japs</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1-RELEASE</version>
     </parent>
 
-    <artifactId>japs-demo</artifactId>
     <modules>
         <module>japs-demo-api</module>
         <module>japs-demo-consumer</module>
         <module>japs-demo-provider</module>
     </modules>
-    <packaging>pom</packaging>
 </project>
