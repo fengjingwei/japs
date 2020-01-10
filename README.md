@@ -22,4 +22,4 @@
 
 ## Support ##
 - 如有任何问题欢迎微我
-- ![](https://github.com/fengjingwei/Docs/raw/master/wechat.jpg)
+- ![](https://github.com/fengjingwei/japs/doc/raw/master/wechat.jpg)

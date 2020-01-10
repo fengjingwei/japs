@@ -6,7 +6,7 @@
     <version>0.0.1-RELEASE</version>
     <packaging>jar</packaging>
     <name>Japs Server</name>
-    <description>japs Server project for Spring Boot</description>
+    <description>Japs Server project for Spring Boot</description>
 
     <parent>
         <groupId>com.japs</groupId>
