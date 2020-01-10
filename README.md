@@ -18,8 +18,8 @@
 > 
 > cd japs
 > 
-> mvn -DskipTests clean install -U
+> mvn clean install -DskipTests -U
 
 ## Support ##
 - 如有任何问题欢迎微我
-- ![](https://github.com/fengjingwei/japs/doc/raw/master/wechat.jpg)
+- ![](https://raw.githubusercontent.com/fengjingwei/japs/master/doc/wechat.jpg)
