@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ConsulServiceRegistry implements ServiceRegistry {
 
-    private ConsulClient consulClient;
+    private final ConsulClient consulClient;
 
     public ConsulServiceRegistry(String consulAddress) {
         String[] address = consulAddress.split(":");
@@ -36,6 +36,6 @@ public class ConsulServiceRegistry implements ServiceRegistry {
 
     private String generateNewIdForService(String serviceName, ServiceAddress serviceAddress) {
         // serviceName + ip + port
-        return serviceName + "-" + serviceAddress.getIp() + "-" + serviceAddress.getPort();
+        return String.format("%s-%s-%s", serviceName, serviceAddress.getIp(), serviceAddress.getPort());
     }
 }

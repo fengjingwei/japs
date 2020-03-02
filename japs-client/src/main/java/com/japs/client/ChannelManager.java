@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 public class ChannelManager {
 
-    private static ChannelManager channelManager;
+    private static volatile ChannelManager channelManager;
 
     private Map<InetSocketAddress, Channel> channels = Maps.newConcurrentMap();
 

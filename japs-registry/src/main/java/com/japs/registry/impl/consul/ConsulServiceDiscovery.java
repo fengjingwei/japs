@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class ConsulServiceDiscovery implements ServiceDiscovery {
 
     private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() << 1;
-    private ConsulClient consulClient;
+    private final ConsulClient consulClient;
     private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
 
     public ConsulServiceDiscovery(String consulAddress) {
@@ -35,12 +35,12 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
     @Override
     public String discover(String serviceName) {
         List<HealthService> healthServices;
-        if (!loadBalancerMap.containsKey(serviceName)) {
-            healthServices = consulClient.getHealthServices(serviceName, true, QueryParams.DEFAULT).getValue();
-            loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices));
-            // Watch consul
-            longPolling(serviceName);
-        }
+        // if (!loadBalancerMap.containsKey(serviceName)) {
+        healthServices = consulClient.getHealthServices(serviceName, true, QueryParams.DEFAULT).getValue();
+        loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices));
+        // Watch consul
+        longPolling(serviceName);
+        // }
         ServiceAddress address = loadBalancerMap.get(serviceName).next();
         if (address == null) {
             throw new RuntimeException(String.format("No service instance for %s", serviceName));
@@ -68,10 +68,14 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
         pool.shutdown();
     }
 
-    private LoadBalancer buildLoadBalancer(List<HealthService> healthServices) {
-        return new RandomLoadBalancer(healthServices.stream().map(healthService -> {
-            HealthService.Service service = healthService.getService();
-            return new ServiceAddress(service.getAddress(), service.getPort());
-        }).collect(Collectors.toList()));
+    private LoadBalancer<ServiceAddress> buildLoadBalancer(List<HealthService> healthServices) {
+        return new RandomLoadBalancer(healthServices.stream()
+                .map(healthService ->
+                        {
+                            HealthService.Service service = healthService.getService();
+                            return new ServiceAddress(service.getAddress(), service.getPort());
+                        }
+                )
+                .collect(Collectors.toList()));
     }
 }

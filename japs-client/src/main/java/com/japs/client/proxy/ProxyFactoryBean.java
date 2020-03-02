@@ -11,7 +11,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.FactoryBean;
 
 import java.lang.reflect.Method;
@@ -58,7 +57,7 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         // Get channel by service address
         Channel channel = ChannelManager.getInstance().getChannel(serviceAddress);
         if (channel == null) {
-            throw new RuntimeException("Can't get channel for address" + serviceAddress);
+            throw new RuntimeException("Can't get channel for address " + serviceAddress);
         }
         // Send request
         RpcResponse response = sendRequest(channel, request);
@@ -73,11 +72,11 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
     }
 
     private String generateRequestId(String targetServiceName) {
-        return targetServiceName + "-" + UUID.randomUUID().toString();
+        return String.format("%s-%s", targetServiceName, UUID.randomUUID().toString());
     }
 
     private InetSocketAddress getServiceAddress(String targetServiceName) {
-        String serviceAddress = StringUtils.EMPTY;
+        String serviceAddress = StringUtilsX.EMPTY;
         if (serviceDiscovery != null) {
             serviceAddress = serviceDiscovery.discover(targetServiceName);
             log.debug("Get address: {} for service: {}", serviceAddress, targetServiceName);

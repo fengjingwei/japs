@@ -48,12 +48,12 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     private Map<String, Object> handlerMap = Maps.newConcurrentMap();
 
     @Override
-    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
         log.info("Putting handler");
         // Register handler
-        getServiceInterfaces(ctx).forEach(interfaceClazz -> {
+        getServiceInterfaces(context).forEach(interfaceClazz -> {
             String serviceName = interfaceClazz.getAnnotation(RpcService.class).value().getName();
-            Object serviceBean = ctx.getBean(interfaceClazz);
+            Object serviceBean = context.getBean(interfaceClazz);
             handlerMap.put(serviceName, serviceBean);
             log.debug("Put handler: {}, {}", serviceName, serviceBean);
         });
@@ -107,9 +107,9 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
         }
     }
 
-    private List<Class<?>> getServiceInterfaces(ApplicationContext ctx) {
+    private List<Class<?>> getServiceInterfaces(ApplicationContext context) {
         Class<? extends Annotation> clazz = RpcService.class;
-        return ctx.getBeansWithAnnotation(clazz)
+        return context.getBeansWithAnnotation(clazz)
                 .values().stream()
                 .map(AopUtils::getTargetClass)
                 .map(cls -> Arrays.asList(cls.getInterfaces()))

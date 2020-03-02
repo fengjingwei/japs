@@ -13,6 +13,6 @@ public class ServiceAddress {
 
     @Override
     public String toString() {
-        return ip + ":" + port;
+        return String.format("%s:%s", ip, port);
     }
 }

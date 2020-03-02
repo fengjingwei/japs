@@ -1,6 +1,5 @@
 package com.japs.client.proxy;
 
-import com.japs.annotation.EnableRpcClients;
 import com.japs.annotation.RpcService;
 import com.japs.registry.ServiceDiscovery;
 import lombok.NonNull;
@@ -20,9 +19,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -40,12 +36,17 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
         log.info("Register beans");
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcService.class));
-        Stream.of(basePackages).forEach(basePackage -> scanner.findCandidateComponents(basePackage).stream().filter(candidateComponent -> candidateComponent instanceof AnnotatedBeanDefinition).forEach(candidateComponent -> {
-            AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
-            AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
-            BeanDefinitionHolder holder = createBeanDefinition(annotationMetadata);
-            BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
-        }));
+        Stream.of(basePackages)
+                .forEach(basePackage -> scanner.findCandidateComponents(basePackage)
+                        .stream()
+                        .filter(candidateComponent -> candidateComponent instanceof AnnotatedBeanDefinition)
+                        .forEach(candidateComponent -> {
+                            AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
+                            AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
+                            BeanDefinitionHolder holder = createBeanDefinition(annotationMetadata);
+                            BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+                        })
+                );
     }
 
     private ClassPathScanningCandidateComponentProvider getScanner() {
@@ -59,7 +60,6 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
                     if (beanDefinition.getMetadata().isInterface()
                             && beanDefinition.getMetadata().getInterfaceNames().length == 1
                             && Annotation.class.getName().equals(beanDefinition.getMetadata().getInterfaceNames()[0])) {
-
                         try {
                             Class<?> target = Class.forName(beanDefinition.getMetadata().getClassName());
                             return !target.isAnnotation();
@@ -82,26 +82,6 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
         definition.addPropertyValue("type", className);
         definition.addPropertyValue("serviceDiscovery", serviceDiscovery);
         return new BeanDefinitionHolder(definition.getBeanDefinition(), beanName);
-    }
-
-    private Set<String> getBasePackages() {
-        String[] basePackages = getMainClass().getAnnotation(EnableRpcClients.class).basePackages();
-        return Stream.of(basePackages).collect(Collectors.toSet());
-    }
-
-    private Class<?> getMainClass() {
-        for (final Map.Entry<String, String> entry : System.getenv().entrySet()) {
-            if (entry.getKey().startsWith("JAVA_MAIN_CLASS")) {
-                String mainClass = entry.getValue();
-                log.debug("Main class: {}", mainClass);
-                try {
-                    return Class.forName(mainClass);
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalStateException("Cannot determine main class.");
-                }
-            }
-        }
-        throw new IllegalStateException("Cannot determine main class.");
     }
 
     @Override

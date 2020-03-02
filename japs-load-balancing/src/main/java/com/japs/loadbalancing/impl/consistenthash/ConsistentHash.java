@@ -6,13 +6,13 @@ import java.util.TreeMap;
 
 public class ConsistentHash<T> {
 
-    private final HashFunction hashFunction;
+    private final HashFunction<Object> hashFunction;
 
     private final int numberOfReplicas;
 
     private final SortedMap<Integer, T> circle = new TreeMap<>();
 
-    public ConsistentHash(HashFunction hashFunction, int numberOfReplicas, Collection<T> nodes) {
+    public ConsistentHash(HashFunction<Object> hashFunction, int numberOfReplicas, Collection<T> nodes) {
         this.hashFunction = hashFunction;
         this.numberOfReplicas = numberOfReplicas;
         nodes.forEach(this::add);

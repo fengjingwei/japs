@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class RpcResponseFutureManager {
 
-    private static RpcResponseFutureManager rpcResponseFutureManager;
+    private static volatile RpcResponseFutureManager rpcResponseFutureManager;
     private Map<String, RpcResponseFuture> rpcFutureMap = Maps.newConcurrentMap();
 
     private RpcResponseFutureManager() {

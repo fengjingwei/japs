@@ -41,29 +41,29 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
 
     @Override
     public String discover(String serviceName) {
-        if (!loadBalancerMap.containsKey(serviceName)) {
-            String servicePath = StringUtilsX.join(REGISTRY_PATH, serviceName);
-            try {
-                List<String> zNodePaths = zooKeeper.getChildren(servicePath, true);
-                if (!CollectionUtils.isEmpty(zNodePaths)) {
-                    List<String> servers = zNodePaths.stream()
-                            .filter(StringUtilsX::isNoneBlank)
-                            .map(zNodePath -> {
-                                try {
-                                    byte[] content = zooKeeper.getData(StringUtilsX.join(servicePath, zNodePath), true, new Stat());
-                                    return new String(content);
-                                } catch (KeeperException | InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                return null;
-                            }).collect(Collectors.toList());
+        // if (!loadBalancerMap.containsKey(serviceName)) {
+        String servicePath = StringUtilsX.join(REGISTRY_PATH, serviceName);
+        try {
+            List<String> zNodePaths = zooKeeper.getChildren(servicePath, true);
+            if (!CollectionUtils.isEmpty(zNodePaths)) {
+                List<String> servers = zNodePaths.stream()
+                        .filter(StringUtilsX::isNoneBlank)
+                        .map(zNodePath -> {
+                            try {
+                                byte[] content = zooKeeper.getData(StringUtilsX.join(servicePath, zNodePath), true, new Stat());
+                                return new String(content);
+                            } catch (KeeperException | InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }).collect(Collectors.toList());
 
-                    loadBalancerMap.put(serviceName, buildLoadBalancer(servers));
-                }
-            } catch (Exception e) {
-                log.debug("Get zookeeper data failure : {}", e);
+                loadBalancerMap.put(serviceName, buildLoadBalancer(servers));
             }
+        } catch (Exception e) {
+            log.debug("Get zookeeper data failure : {}", e);
         }
+        // }
 
         ServiceAddress address = loadBalancerMap.get(serviceName).next();
         if (address == null) {
@@ -73,9 +73,13 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
     }
 
     private LoadBalancer<ServiceAddress> buildLoadBalancer(List<String> servers) {
-        return new RandomLoadBalancer(servers.stream().map(server -> {
-            String[] serverArr = StringUtilsX.split(server, ":");
-            return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
-        }).collect(Collectors.toList()));
+        return new RandomLoadBalancer(servers.stream()
+                .map(server ->
+                        {
+                            String[] serverArr = StringUtilsX.split(server, ":");
+                            return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
+                        }
+                )
+                .collect(Collectors.toList()));
     }
 }

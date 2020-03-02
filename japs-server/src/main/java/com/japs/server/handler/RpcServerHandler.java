@@ -15,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-    private Map<String, Object> handlerMap;
+    private final Map<String, Object> handlerMap;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) {
