@@ -24,7 +24,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
 
     private static final CountDownLatch LATCH = new CountDownLatch(1);
     private static volatile ZooKeeper zooKeeper;
-    private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
+    private final Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
 
     public ZookeeperServiceDiscovery(String zookeeperAddress) {
         try {
@@ -61,7 +61,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
                 loadBalancerMap.put(serviceName, buildLoadBalancer(servers));
             }
         } catch (Exception e) {
-            log.debug("Get zookeeper data failure : {}", e);
+            log.error("Get zookeeper data failure : {}", e);
         }
         // }
 

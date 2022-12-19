@@ -3,7 +3,7 @@
 
 ## Features ##
 1. 采用Netty4.x网络编程，NIO长连接进行通信，通道多路复用实现高性能高并发的RPC开源框架.
-2. 支持Zookeeper，Consul分布式服务注册中心，进行服务注册.
+2. 支持Nacos，Zookeeper，Consul分布式服务注册中心，进行服务注册.
 3. 支持服务LoadBalancer负载均衡，提高服务器响应速度，解决网络拥塞问题.
 4. 提供场景Demo工程可以快速体验.
 

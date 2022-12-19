@@ -81,7 +81,7 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
             serviceAddress = serviceDiscovery.discover(targetServiceName);
             log.debug("Get address: {} for service: {}", serviceAddress, targetServiceName);
         }
-        if (StringUtilsX.isEmpty(serviceAddress)) {
+        if (StringUtilsX.isBlank(serviceAddress)) {
             throw new RuntimeException(String.format("Address of target service %s is empty", targetServiceName));
         }
         String[] array = StringUtilsX.split(serviceAddress, ":");

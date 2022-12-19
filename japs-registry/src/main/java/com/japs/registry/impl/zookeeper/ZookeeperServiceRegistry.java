@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch;
 public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstant {
 
     private static final CountDownLatch LATCH = new CountDownLatch(1);
-    private static volatile ZooKeeper zooKeeper;
+    private volatile ZooKeeper zooKeeper;
 
     private ZookeeperServiceRegistry(String zookeeperAddress) {
         try {
@@ -53,7 +53,7 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
             String addressNode = zooKeeper.create(addressPath, serviceAddress.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             log.debug("Create address node : {} => {}", addressNode, serviceAddress);
         } catch (Exception e) {
-            log.debug("Create node failure : {}", e);
+            log.error("Create zooKeeper node failure : {}", e);
         }
     }
 }

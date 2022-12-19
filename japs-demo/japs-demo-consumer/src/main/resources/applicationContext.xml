@@ -13,8 +13,12 @@
         <constructor-arg name="consulAddress" value="127.0.0.1:8500"/>
     </bean>-->
 
-    <bean id="serviceDiscovery" class="com.japs.registry.impl.zookeeper.ZookeeperServiceDiscovery">
-        <constructor-arg name="zookeeperAddress" value="192.168.1.135:2181"/>
+    <!--<bean id="serviceDiscovery" class="com.japs.registry.impl.zookeeper.ZookeeperServiceDiscovery">
+        <constructor-arg name="zookeeperAddress" value="127.0.0.1:2181"/>
+    </bean>-->
+
+    <bean id="serviceDiscovery" class="com.japs.registry.impl.nacos.NacosServiceDiscovery">
+        <property name="serverAddress" value="172.21.31.3:8848"/>
     </bean>
 
     <bean id="rpcProxy" class="com.japs.client.proxy.ServiceProxyProvider">

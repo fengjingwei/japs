@@ -73,15 +73,17 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel channel) {
                             ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addLast(new RpcDecoder(RpcRequest.class, new ProtobufSerializer()))
-                                    .addLast(new RpcEncoder(RpcResponse.class, new ProtobufSerializer()))
-                                    .addLast(new RpcServerHandler(handlerMap));
+                            pipeline.addLast("RpcDecoder", new RpcDecoder(RpcRequest.class, new ProtobufSerializer()))
+                                    .addLast("RpcEncoder", new RpcEncoder(RpcResponse.class, new ProtobufSerializer()))
+                                    .addLast("RpcServerHandler", new RpcServerHandler(handlerMap));
                         }
-                    }).option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true);
+                    });
             ChannelFuture future = bootstrap.bind(serverIp, serverPort).sync();
             registerServices();
             log.info("Server started");

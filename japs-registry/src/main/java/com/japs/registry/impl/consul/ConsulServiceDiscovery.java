@@ -23,7 +23,7 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
 
     private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() << 1;
     private final ConsulClient consulClient;
-    private Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
+    private final Map<String, LoadBalancer<ServiceAddress>> loadBalancerMap = Maps.newConcurrentMap();
 
     public ConsulServiceDiscovery(String consulAddress) {
         log.debug("Use consul to do service discovery: {}", consulAddress);

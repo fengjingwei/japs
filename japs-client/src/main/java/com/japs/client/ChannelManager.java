@@ -73,9 +73,9 @@ public class ChannelManager {
         @Override
         protected void initChannel(SocketChannel ch) {
             ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast(new RpcEncoder(RpcRequest.class, new ProtobufSerializer()))
-                    .addLast(new RpcDecoder(RpcResponse.class, new ProtobufSerializer()))
-                    .addLast(new RpcResponseHandler());
+            pipeline.addLast("RpcEncoder", new RpcEncoder(RpcRequest.class, new ProtobufSerializer()))
+                    .addLast("RpcDecoder", new RpcDecoder(RpcResponse.class, new ProtobufSerializer()))
+                    .addLast("RpcResponseHandler", new RpcResponseHandler());
         }
     }
 
