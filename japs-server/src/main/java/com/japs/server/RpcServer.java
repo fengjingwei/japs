@@ -45,7 +45,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     @NonNull
     private ServiceRegistry serviceRegistry;
 
-    private Map<String, Object> handlerMap = Maps.newConcurrentMap();
+    private final Map<String, Object> handlerMap = Maps.newConcurrentMap();
 
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
@@ -97,15 +97,13 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     }
 
     private void registerServices() {
-        if (serviceRegistry != null) {
-            if (CollectionUtils.isEmpty(handlerMap.values())) {
-                log.info("No discovery service");
-            } else {
-                handlerMap.keySet().forEach(interfaceName -> {
-                    serviceRegistry.register(interfaceName, new ServiceAddress(serverIp, serverPort));
-                    log.info("Registering service: {} with address: {}:{}", interfaceName, serverIp, serverPort);
-                });
-            }
+        if (CollectionUtils.isEmpty(handlerMap.values())) {
+            log.info("No discovery service");
+        } else {
+            handlerMap.keySet().forEach(interfaceName -> {
+                serviceRegistry.register(interfaceName, new ServiceAddress(serverIp, serverPort));
+                log.info("Registering service: {} with address: {}:{}", interfaceName, serverIp, serverPort);
+            });
         }
     }
 

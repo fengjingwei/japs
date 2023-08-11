@@ -14,7 +14,7 @@ public class ConsulServiceRegistry implements ServiceRegistry {
 
     public ConsulServiceRegistry(String consulAddress) {
         String[] address = consulAddress.split(":");
-        ConsulRawClient rawClient = new ConsulRawClient(address[0], Integer.valueOf(address[1]));
+        ConsulRawClient rawClient = new ConsulRawClient(address[0], Integer.parseInt(address[1]));
         consulClient = new ConsulClient(rawClient);
     }
 

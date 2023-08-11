@@ -21,7 +21,7 @@ public class ChannelManager {
 
     private static volatile ChannelManager channelManager;
 
-    private Map<InetSocketAddress, Channel> channels = Maps.newConcurrentMap();
+    private final Map<InetSocketAddress, Channel> channels = Maps.newConcurrentMap();
 
     private ChannelManager() {
     }
@@ -68,7 +68,7 @@ public class ChannelManager {
         channels.remove(inetSocketAddress);
     }
 
-    private class RpcChannelInitializer extends ChannelInitializer<SocketChannel> {
+    private static class RpcChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         @Override
         protected void initChannel(SocketChannel ch) {
@@ -79,7 +79,7 @@ public class ChannelManager {
         }
     }
 
-    private class RpcResponseHandler extends SimpleChannelInboundHandler<RpcResponse> {
+    private static class RpcResponseHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
         @Override
         protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcResponse rpcResponse) {
@@ -89,7 +89,7 @@ public class ChannelManager {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            log.warn("RPC request exception: {}", cause);
+            log.warn("RPC request exception", cause);
         }
     }
 }

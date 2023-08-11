@@ -38,7 +38,7 @@ public class NacosServiceRegistry implements ServiceRegistry, ServiceConstant {
             NamingService namingService = NamingFactory.createNamingService(properties);
             namingService.registerInstance(serviceName, serviceAddress.getIp(), serviceAddress.getPort());
         } catch (NacosException e) {
-            log.error("Register nacos service failure : {}", e);
+            log.error("Register nacos service failure", e);
         }
     }
 }

@@ -61,7 +61,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
                 loadBalancerMap.put(serviceName, buildLoadBalancer(servers));
             }
         } catch (Exception e) {
-            log.error("Get zookeeper data failure : {}", e);
+            log.error("Get zookeeper data failure", e);
         }
         // }
 
@@ -77,7 +77,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery, ServiceConst
                 .map(server ->
                         {
                             String[] serverArr = StringUtilsX.split(server, ":");
-                            return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
+                            return new ServiceAddress(serverArr[0], Integer.parseInt(serverArr[1]));
                         }
                 )
                 .collect(Collectors.toList()));

@@ -53,7 +53,7 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
             String addressNode = zooKeeper.create(addressPath, serviceAddress.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             log.debug("Create address node : {} => {}", addressNode, serviceAddress);
         } catch (Exception e) {
-            log.error("Create zooKeeper node failure : {}", e);
+            log.error("Create zooKeeper node failure", e);
         }
     }
 }

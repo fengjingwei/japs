@@ -28,7 +28,7 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
     public ConsulServiceDiscovery(String consulAddress) {
         log.debug("Use consul to do service discovery: {}", consulAddress);
         String[] address = consulAddress.split(":");
-        ConsulRawClient rawClient = new ConsulRawClient(address[0], Integer.valueOf(address[1]));
+        ConsulRawClient rawClient = new ConsulRawClient(address[0], Integer.parseInt(address[1]));
         consulClient = new ConsulClient(rawClient);
     }
 

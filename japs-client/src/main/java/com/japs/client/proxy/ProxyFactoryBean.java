@@ -72,7 +72,7 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
     }
 
     private String generateRequestId(String targetServiceName) {
-        return String.format("%s-%s", targetServiceName, UUID.randomUUID().toString());
+        return String.format("%s-%s", targetServiceName, UUID.randomUUID());
     }
 
     private InetSocketAddress getServiceAddress(String targetServiceName) {
@@ -101,7 +101,7 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         try {
             return rpcResponseFuture.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
-            log.warn("Exception:", e);
+            log.warn("Send request exception", e);
             return null;
         }
     }

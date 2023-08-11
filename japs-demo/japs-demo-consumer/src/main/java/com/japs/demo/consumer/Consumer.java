@@ -5,6 +5,8 @@ import com.japs.demo.api.order.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 public class Consumer {
 
@@ -15,7 +17,7 @@ public class Consumer {
         OrderService orderService = context.getBean(OrderService.class);
         while (true) {
             try {
-                Thread.sleep(1000);
+                TimeUnit.MILLISECONDS.sleep(1000);
                 log.info("{}", helloService.hello("我来了，这世界"));
 
                 log.info("{}", helloService.list());

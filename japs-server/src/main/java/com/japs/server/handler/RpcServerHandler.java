@@ -26,7 +26,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
             Object result = handleRequest(request);
             response.setResult(result);
         } catch (Exception e) {
-            log.warn("Get exception when handing request, exception: {}", e);
+            log.warn("Get exception when handing request", e);
             response.setException(e);
         }
         ctx.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> log.debug("Sent response for request: {}", request.getRequestId()));

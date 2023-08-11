@@ -48,7 +48,7 @@ public class NacosServiceDiscovery implements ServiceDiscovery, ServiceConstant 
             List<String> servers = namingService.getAllInstances(serviceName, true).stream().map(Instance::toInetAddr).collect(Collectors.toList());
             loadBalancerMap.put(serviceName, buildLoadBalancer(servers));
         } catch (NacosException e) {
-            log.error("Get nacos data failure : {}", e);
+            log.error("Get nacos data failure", e);
         }
         ServiceAddress address = loadBalancerMap.get(serviceName).next();
         if (address == null) {
@@ -62,7 +62,7 @@ public class NacosServiceDiscovery implements ServiceDiscovery, ServiceConstant 
                 .map(server ->
                         {
                             String[] serverArr = StringUtilsX.split(server, ":");
-                            return new ServiceAddress(serverArr[0], Integer.valueOf(serverArr[1]));
+                            return new ServiceAddress(serverArr[0], Integer.parseInt(serverArr[1]));
                         }
                 )
                 .collect(Collectors.toList()));

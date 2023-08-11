@@ -7,7 +7,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class RpcEncoder extends MessageToByteEncoder {
+public class RpcEncoder extends MessageToByteEncoder<Object> {
 
     private Class<?> genericClass;
 

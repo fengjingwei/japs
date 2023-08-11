@@ -13,9 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ProtobufSerializer implements Serializer {
 
-    private static Map<Class<?>, Schema<?>> cachedSchema = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Schema<?>> cachedSchema = new ConcurrentHashMap<>();
 
-    private static Objenesis objenesis = new ObjenesisStd(true);
+    private static final Objenesis objenesis = new ObjenesisStd(true);
 
     private static <T> Schema<T> getSchema(Class<T> cls) {
         Schema<T> schema = (Schema<T>) cachedSchema.get(cls);
