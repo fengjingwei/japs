@@ -32,7 +32,7 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
     private String[] basePackages;
 
     @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+    public void postProcessBeanDefinitionRegistry(@NonNull BeanDefinitionRegistry registry) throws BeansException {
         log.info("Register beans");
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcService.class));
@@ -54,7 +54,7 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
         return new ClassPathScanningCandidateComponentProvider(false) {
 
             @Override
-            protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+            protected boolean isCandidateComponent(@NonNull AnnotatedBeanDefinition beanDefinition) {
                 if (beanDefinition.getMetadata().isIndependent()) {
 
                     if (beanDefinition.getMetadata().isInterface()
@@ -85,6 +85,6 @@ public class ServiceProxyProvider implements BeanDefinitionRegistryPostProcessor
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory beanFactory) throws BeansException {
     }
 }

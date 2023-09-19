@@ -37,7 +37,7 @@ public class RpcResponseFuture implements Future<Object> {
     }
 
     @Override
-    public RpcResponse get(long timeout, TimeUnit unit) throws TimeoutException {
+    public RpcResponse get(long timeout, @NonNull TimeUnit unit) throws TimeoutException {
         try {
             if (!LATCH.await(timeout, unit)) {
                 throw new TimeoutException("RPC Request timeout");

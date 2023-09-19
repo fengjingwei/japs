@@ -48,7 +48,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     private final Map<String, Object> handlerMap = Maps.newConcurrentMap();
 
     @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext context) throws BeansException {
         log.info("Putting handler");
         // Register handler
         getServiceInterfaces(context).forEach(interfaceClazz -> {
@@ -76,6 +76,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
+
                         @Override
                         public void initChannel(SocketChannel channel) {
                             ChannelPipeline pipeline = channel.pipeline();

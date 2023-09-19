@@ -53,7 +53,7 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
         ExecutorService pool = new ThreadPoolExecutor(MAX_THREAD, MAX_THREAD, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
         pool.execute(() -> {
             long consulIndex = -1;
-            do {
+            while (true) {
                 QueryParams param = QueryParams.Builder.builder().setIndex(consulIndex).build();
                 Response<List<HealthService>> healthyServices = consulClient.getHealthServices(serviceName, true, param);
                 consulIndex = healthyServices.getConsulIndex();
@@ -63,7 +63,7 @@ public class ConsulServiceDiscovery implements ServiceDiscovery {
                 log.debug("Service addresses of {} is: {}", serviceName, healthServices);
 
                 loadBalancerMap.put(serviceName, buildLoadBalancer(healthServices));
-            } while (true);
+            }
         });
         pool.shutdown();
     }

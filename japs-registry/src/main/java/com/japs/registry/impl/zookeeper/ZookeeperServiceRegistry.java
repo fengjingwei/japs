@@ -38,20 +38,20 @@ public class ZookeeperServiceRegistry implements ServiceRegistry, ServiceConstan
             String registryPath = REGISTRY_PATH;
             if (zooKeeper.exists(registryPath, true) == null) {
                 zooKeeper.create(registryPath, registryPath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-                log.debug("Create registry node : {}", registryPath);
+                log.debug("Create registry node: {}", registryPath);
             }
 
             // Create service node
             String servicePath = StringUtilsX.join(registryPath, serviceName);
             if (zooKeeper.exists(servicePath, true) == null) {
                 zooKeeper.create(servicePath, servicePath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-                log.debug("Create service node : {}", servicePath);
+                log.debug("Create service node: {}", servicePath);
             }
 
             // Create address node
             String addressPath = StringUtilsX.join(servicePath, "address-");
             String addressNode = zooKeeper.create(addressPath, serviceAddress.toString().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-            log.debug("Create address node : {} => {}", addressNode, serviceAddress);
+            log.debug("Create address node: {} => {}", addressNode, serviceAddress);
         } catch (Exception e) {
             log.error("Create zooKeeper node failure", e);
         }
